@@ -19,17 +19,21 @@ class LoginPage(QWidget):
         login_format=QFormLayout()
         self.lbl=QLabel("Login Your Account")
 
-        self.i = QLabel(self)
-        self.i.setGeometry(10, 10, 1, 1)
-        self.pixel_map = QPixmap("../GameProject/images/p.png")
-        self.i.setPixmap(self.pixel_map)
-        self.i.setScaledContents(True)
-
+        self.img=QLabel()
+        self.img.setFixedSize(100,100)
+        self.img.setAlignment(Qt.AlignCenter)
+        self.pic=QPixmap("images/p.png")
+        pic = self.pic.scaled(self.img.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.img.setPixmap(pic)
         self.lbl1=QLabel("Username: ")
         self.user_input=QLineEdit(self)
         self.lbl2=QLabel("Password: ")
         self.pass_input=QLineEdit(self)
         self.pass_input.setEchoMode(QLineEdit.Password)
+        self.forget=QLabel("<a href='#'>Forget Password?</a>")
+        self.forget.setOpenExternalLinks(False)
+        self.forget.linkActivated.connect(self.open_forgot)
+        self.forget.setAlignment(Qt.AlignCenter)
         self.log_btn=QPushButton("Login")
         self.log_btn.clicked.connect(self.log_acc)
         self.lbl3 = QLabel("Create an account?")
@@ -41,13 +45,16 @@ class LoginPage(QWidget):
         self.lbl.setObjectName("lbl")
 
         login_format.addRow(self.lbl)
-        login_format.addRow(self.i)
+        login_format.addRow(self.img)
         login_format.addRow(self.lbl1)
         login_format.addRow(self.user_input)
         login_format.addRow(self.lbl2)
         login_format.addRow(self.pass_input)
+        login_format.addRow(self.forget)
         login_format.addRow(self.log_btn)
         login_format.addRow(self.lbl3, self.lbl4)
+
+        login_format.setAlignment(self.img,Qt.AlignCenter)
 
         self.lbl.setAlignment(Qt.AlignHCenter)
         self.lbl1.setAlignment(Qt.AlignHCenter)
@@ -133,6 +140,12 @@ class LoginPage(QWidget):
             self.welcome = GameWindow(username)
             self.welcome.show()
             self.close()
+
+    def open_forgot(self):
+        from forget_win import ForgotPage
+        self.forget_win = ForgotPage()
+        self.forget_win.show()
+        self.close()
 
     def open_reg(self):
         from register import RegisterPage
