@@ -37,7 +37,8 @@ class GameWindow(QWidget):
         self.l.addWidget(self.continue_btn, alignment=Qt.AlignCenter)
 
         self.logout_btn = QPushButton("Logout")
-        self.logout_btn.setFont(QFont("Arial", 10))
+        self.logout_btn.setFont(QFont("Times New Roman", 10))
+        self.logout_btn.clicked.connect(self.logout)
         self.logout_btn.setFixedSize(90, 28)
 
         self.bottom_layout = QHBoxLayout()

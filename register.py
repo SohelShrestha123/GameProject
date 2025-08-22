@@ -1,9 +1,10 @@
 import re
 import sqlite3
 import sys
+import hashlib
 from PyQt5.QtWidgets import (QApplication, QWidget, QLabel, QLineEdit,
                              QPushButton, QFormLayout, QRadioButton, QButtonGroup,
-                             QMessageBox)
+                             QMessageBox,QTimeEdit,QDateEdit)
 from PyQt5.QtGui import QIcon
 from PyQt5.QtCore import Qt
 
@@ -47,9 +48,9 @@ class RegisterPage(QWidget):
         self.radiobutton2.setChecked(False)
         self.radiobutton2.gender = "Female"
         self.lbl8= QLabel("DOB: ")
-        self.txt8 = QLineEdit(self)
+        self.txt8 = QDateEdit(self)
         self.birth_time=QLabel("Birth Time: ")
-        self.time_in=QLineEdit(self)
+        self.time_in=QTimeEdit(self)
         self.btn = QPushButton("Submit")
         self.btn.clicked.connect(self.validation)
         self.btn_group = QButtonGroup()
@@ -191,6 +192,9 @@ class RegisterPage(QWidget):
 
         gender = select.text()
 
+        hashed_pw = hashlib.sha256(np.encode()).hexdigest()
+        hashed_cp = hashlib.sha256(cp.encode()).hexdigest()
+
         con = sqlite3.connect('game.db')
         cursor = con.cursor()
         cursor.execute("SELECT * FROM player WHERE username=? OR email=?", (uname, e))
@@ -201,7 +205,7 @@ class RegisterPage(QWidget):
 
 
         cursor.execute('''INSERT INTO player(firstname,lastname,username,address,email,newpassword,confirmpassword,gender,dob,birthtime)
-        VALUES(?,?,?,?,?,?,?,?,?,?)''', (fname, lname, uname,a,e, np, cp, gender,dob,b))
+        VALUES(?,?,?,?,?,?,?,?,?,?)''', (fname, lname, uname,a,e,hashed_pw,hashed_cp, gender,dob,b))
         con.commit()
         con.close()
         QMessageBox.information(self, "Account Created", "Your account has been created successfully.")

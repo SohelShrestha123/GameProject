@@ -130,16 +130,17 @@ class LoginPage(QWidget):
             cursor = con.cursor()
             cursor.execute("SELECT * FROM player WHERE username=? AND confirmpassword=?", (username, password))
             u = cursor.fetchone()
+            con.close()
             if u:
-                QMessageBox.information(self, "Success", "Logged in.")
+                from gamewindow import GameWindow
+                self.game = GameWindow(username)
+                self.game.show()
+                self.close()
 
             else:
                 QMessageBox.critical(self, "Error", "Invalid email or password.")
 
-            from gamewindow import GameWindow
-            self.welcome = GameWindow(username)
-            self.welcome.show()
-            self.close()
+           
 
     def open_forgot(self):
         from forget_win import ForgotPage

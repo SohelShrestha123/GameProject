@@ -1,3 +1,4 @@
+import hashlib
 import sqlite3
 import sys
 from PyQt5.QtWidgets import QApplication,QFormLayout, QLineEdit, QPushButton, QMessageBox, QWidget, QLabel
@@ -15,6 +16,8 @@ class ForgotPage(QWidget):
 
         self.new_password=QLabel("Enter new password: ")
         self.new_pass_input = QLineEdit()
+        self.new_pass_input.setEchoMode(QLineEdit.Password)
+
 
         self.confirm_password=QLabel("Enter Confirm Password: ")
         self.confirm_pass_input = QLineEdit()
@@ -49,7 +52,9 @@ class ForgotPage(QWidget):
         user = cursor.fetchone()
 
         if user:
-            cursor.execute("UPDATE player SET confirmpassword=? WHERE username=?", (new_pass, username))
+            hashed_np=hashlib.sha256(confirm_pass.encode()).hexdigest()
+            hashed_pw = hashlib.sha256(new_pass.encode()).hexdigest()
+            cursor.execute("UPDATE player SET newpassword=?,confirmpassword=? WHERE username=?", (hashed_np,hashed_pw, username))
             conn.commit()
             QMessageBox.information(self, "Success", "Password changed successfully.")
             self.close()
